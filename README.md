@@ -1,14 +1,14 @@
 1. Instructions: Compile and run in container
 
-The project uses a helper script `run.sh` to compile and run in a Podman container.
+The project uses a helper script `run.sh` to compile and run in a Podman container.  
 
-./run.sh build          - Builds the application and forwarder container
-./run.sh start          - Creates two Podman networks and starts forwarder container attached to them
-./run.sh logs           - Connects to application output in container
-./run.sh pdump <rx|tx>  - Starts packet capture on either of the two ports used
-./run.sh stop           - Stops the application and container
-./run.sh cleanup        - Kills the container, cleans hugepages and removes Podman networks
-./run.sh destroy        - Removes container images
+`./run.sh build`          - Builds the application and forwarder container  
+`./run.sh start`          - Creates two Podman networks and starts forwarder container attached to them  
+`./run.sh logs`           - Connects to application output in container  
+`./run.sh pdump <rx|tx>`  - Starts packet capture on either of the two ports used  
+`./run.sh stop`           - Stops the application and container  
+`./run.sh cleanup`        - Kills the container, cleans hugepages and removes Podman networks  
+`./run.sh destroy`        - Removes container images  
 
 2. Dependencies
 
@@ -17,20 +17,21 @@ The project uses a helper script `run.sh` to compile and run in a Podman contain
 
 3. Flow Tracking
 
-The application extracts a 5-tuple (Source IP, Destination IP, Source Port, Destination Port, Protocol) from each IPv4 packet.
-Storage: Uses rte_hash for lookups.
-Timeout: Flows inactive for longer than the configured `--timeout` are removed during the export cycle to free table space.
-Affinity: Each worker core maintains its own local hash table. In this implementation, flow affinity is guaranteed by dedicated core-to-port mapping.
-- For bare metal code for using hardware RSS is included but not used since it is not supported in containers
+The application extracts a 5-tuple (Source IP, Destination IP, Source Port, Destination Port, Protocol) from each IPv4 packet.  
+Storage: Uses rte_hash for lookups.  
+Timeout: Flows inactive for longer than the configured `--timeout` are removed during the export cycle to free table space.  
+Affinity: Each worker core maintains its own local hash table. In this implementation, flow affinity is guaranteed by dedicated core-to-port mapping.  
+- For bare metal code for using hardware RSS is included but not used since it is not supported in containers  
 
 
 4. Export Format
 
-Statistics are appended to logs/flow_stats_core_<id>.csv. The format is:
-Timestamp, SrcIP, DstIP, SrcPort, DstPort, Proto, RX_Packets, RX_Bytes, TX_Packets, TX_Bytes
-Metric	Description
-RX_Packets/Bytes	Data recorded upon ingress.
-TX_Packets/Bytes	Data recorded only after successful enqueue to the TX ring.
+Statistics are appended to logs/flow_stats_core_<id>.csv. The format is:  
+Timestamp, SrcIP, DstIP, SrcPort, DstPort, Proto, RX_Packets, RX_Bytes, TX_Packets, TX_Bytes  
+
+Metric	Description  
+RX_Packets/Bytes - Data recorded upon ingress.  
+TX_Packets/Bytes - Data recorded only after successful enqueue to the TX ring.  
 
 5. Expected Output and Verification
 
